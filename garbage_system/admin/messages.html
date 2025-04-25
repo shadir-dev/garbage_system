@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messages - Smart Waste</title>
+  <style>
+    nav a {
+      color: rgb(243, 225, 225);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #158b30;
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 12px;
+      margin-bottom: 10px;
+      background-color: #34495e;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .sidebar ul li:hover {
+      background-color: #1abc9c;
+    }
+
+    .main-panel {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .main-panel h1 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .messages-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .message-item {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .message-item:last-child {
+      border-bottom: none;
+    }
+
+    .message-sender {
+      font-weight: bold;
+      color: #34495e;
+    }
+
+    .message-content {
+      margin: 4px 0;
+      color: #555;
+    }
+
+    .message-time {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-panel {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar"> 
+    <nav>
+      <ul>
+        <li class="nav-item"><a class="nav-link" href="admin_index.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_request.php">Manage_request</a></li>
+        <li class="nav-item"><a class="nav-link" href="trucks.php">Manage_trucks</a></li>
+        <li class="nav-item"><a class="nav-link" href="users.php">Users</a></li>
+        <li class="nav-item"><a class="nav-link" href="route.html">Optimized_Route</a></li>
+        <li class="nav-item"><a class="nav-link" href="messages.html">Messages</a></li>
+        <li><a class="nav-link" href="admin_logout.php">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Panel -->
+  <div class="main-panel">
+    <h1>Messages</h1>
+    <div class="messages-container" id="messagesContainer">
+      <!-- Messages will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <script>
+    async function loadMessages() {
+      try {
+        const response = await fetch('get_messages.php');
+        const messages = await response.json();
+        const container = document.getElementById('messagesContainer');
+        container.innerHTML = '';
+
+        messages.forEach(msg => {
+          const item = document.createElement('div');
+          item.classList.add('message-item');
+          item.innerHTML = `
+            <div class="message-sender">${msg.sender}</div>
+            <div class="message-content">${msg.content}</div>
+            <div class="message-time">Received: ${msg.time}</div>
+             <div class="message-email">Received: ${msg.email}</div>
+          `;
+          container.appendChild(item);
+        });
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      }
+    }
+
+    // Load messages on page load and refresh every 10 seconds
+    loadMessages();
+    setInterval(loadMessages, 10000);
+  </script>
+
+</body>
+</html>

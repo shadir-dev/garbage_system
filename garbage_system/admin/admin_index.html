@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Smart Waste</title>
+  <style>
+    nav a {
+      color: rgb(243, 225, 225);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #158b30;
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 12px 10px;
+      margin-bottom: 10px;
+      background-color: #34495e;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .sidebar ul li:hover {
+      background-color: #1abc9c;
+    }
+
+    .main-panel {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .main-panel h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .card span {
+      font-size: 1.5rem;
+      color: #27ae60;
+    }
+
+    @media (max-width: 600px) {
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <nav>
+    <ul>
+      <li class="nav-item"><a class="nav-link" href="admin_index.html">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="manage_request.php">Manage Requests</a></li>
+      <li class="nav-item"><a class="nav-link" href="trucks.php">Manage Trucks</a></li>
+      <li class="nav-item"><a class="nav-link" href="users.php">Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="route.html">Optimized Route</a></li>
+      <li class="nav-item"><a class="nav-link" href="messages.html">Messages</a></li>
+      <li><a href="site_login.html">Logout</a></li>
+    </ul>
+    </nav>
+  </div>
+
+  <!-- Main Panel -->
+  <div class="main-panel">
+    <h1>Dashboard</h1>
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Total Requests</h3>
+        <span id="totalRequests">Loading...</span>
+      </div>
+      <div class="card">
+        <h3>Pending</h3>
+        <span id="pendingRequests">Loading...</span>
+      </div>
+      <div class="card">
+        <h3>Completed</h3>
+        <span id="completedRequests">Loading...</span>
+      </div>
+      <div class="card">
+        <h3>Trucks</h3>
+        <span id="totalTrucks">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Disable right-click
+    document.addEventListener('contextmenu', event => event.preventDefault());
+  
+    // Disable F12, Ctrl+Shift+I, Ctrl+U
+    document.onkeydown = function(e) {
+      if (e.keyCode === 123) return false; // F12
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) return false; // Ctrl+Shift+I/J
+      if (e.ctrlKey && e.keyCode === 85) return false; // Ctrl+U
+    };
+  </script>
+  
+  <!-- Real-time Dashboard Script -->
+  <script>
+    async function fetchDashboardData() {
+      try {
+        const response = await fetch('dashboard.php');
+        const data = await response.json();
+
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+
+        document.getElementById('totalRequests').textContent = data.total_requests;
+        document.getElementById('pendingRequests').textContent = data.pending_requests;
+        document.getElementById('completedRequests').textContent = data.completed_requests;
+        document.getElementById('totalTrucks').textContent = data.total_trucks;
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    }
+
+    fetchDashboardData();
+    setInterval(fetchDashboardData, 5000);
+  </script>
+
+</body>
+</html>
